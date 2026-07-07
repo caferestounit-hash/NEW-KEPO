@@ -126,11 +126,6 @@
 <div id="game-app">
     <div class="scan-effect"></div>
 
-    <!-- AUDIO CONTROLS -->
-    <button id="btn-mute" class="absolute top-4 right-4 z-50 bg-black/60 p-2 rounded-full text-xl hidden border border-cyan-500/50 shadow-[0_0_10px_rgba(6,182,212,0.3)]">
-        🔊
-    </button>
-
     <!-- ==================== SCREEN 1: GATEWAY (LOGIN) ==================== -->
     <section id="screen-gateway" class="flex-1 flex flex-col justify-center items-center p-6 relative z-10 animate-[popIn_0.5s_ease-out]">
         <div class="text-center mb-8">
@@ -217,13 +212,19 @@
         <div class="bg-slate-900/95 p-4 border-b border-cyan-900 flex justify-between items-center shrink-0 shadow-lg">
             <div class="w-1/2 pr-4">
                 <div class="flex justify-between text-xs tech-font mb-1">
-                    <span class="text-cyan-400">SYSTEM LOAD</span>
+                    <span class="text-cyan-400">POINT</span>
                     <span class="text-slate-300"><span id="ui-q-num">1</span>/10</span>
                 </div>
                 <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
                     <div id="ui-progress" class="h-full bg-cyan-500 w-0 transition-all duration-300 shadow-[0_0_10px_#06b6d4]"></div>
                 </div>
             </div>
+
+            <!-- AUDIO CONTROLS -->
+            <button id="btn-mute" class="shrink-0 mx-3 bg-black/60 p-2 rounded-full text-xl hidden border border-cyan-500/50 shadow-[0_0_10px_rgba(6,182,212,0.3)]">
+                🔊
+            </button>
+
             <div class="text-right">
                 <p class="text-xs text-slate-400 tech-font">PERFORMANCE</p>
                 <p class="text-2xl font-black text-white" id="ui-score">0</p>
