@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kepo Weird or Genius</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f111a;
+            --bg-panel: #1e2133;
+            --cyan: #06b6d4;
+            --cyan-glow: rgba(6, 182, 212, 0.5);
+            --purple: #8b5cf6;
+            --weird: #f43f5e; /* Rose/Red */
+            --genius: #10b981; /* Emerald/Green */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #e2e8f0;
+            overflow-x: hidden;
+            overscroll-behavior-y: contain;
+        }
+
+        .tech-font {
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* UI Containers */
+        .glass-panel {
+            background: rgba(30, 33, 51, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+        }
+
+        .glow-border {
+            border: 1px solid var(--cyan);
+            box-shadow: 0 0 10px var(--cyan-glow), inset 0 0 10px var(--cyan-glow);
+        }
+
+        /* Chat Bubbles */
+        .chat-bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 16px 16px 16px 4px;
+            background: #2dd4bf;
+            color: #0f172a;
+            font-weight: 600;
+            position: relative;
+            transform-origin: bottom left;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        .chat-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -8px;
+            width: 0;
+            height: 0;
+            border: 8px solid transparent;
+            border-right-color: #2dd4bf;
+            border-bottom-color: #2dd4bf;
+        }
+
+        /* Buttons */
+        .btn-weird {
+            background: linear-gradient(135deg, #be123c, #e11d48);
+            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
+            transition: all 0.2s;
+        }
+        .btn-weird:active { transform: scale(0.95); }
+
+        .btn-genius {
+            background: linear-gradient(135deg, #047857, #10b981);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            transition: all 0.2s;
+        }
+        .btn-genius:active { transform: scale(0.95); }
+
+        /* Animations */
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .scan-effect {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 200%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(6, 182, 212, 0.05) 51%, transparent 51%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+            animation: scanline 10s linear infinite;
+        }
+
+        /* App Constraints */
+        #game-app {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: radial-gradient(circle at 50% 0%, #1e293b, var(--bg-dark));
+        }
+
+        /* Hide scrollbar */
+        ::-webkit-scrollbar { width: 0; }
+    </style>
+</head>
+<body>
+
+<div id="game-app">
+    <div class="scan-effect"></div>
+
+    <!-- AUDIO CONTROLS -->
+    <button id="btn-mute" class="absolute top-4 right-4 z-50 bg-black/60 p-2 rounded-full text-xl hidden border border-cyan-500/50 shadow-[0_0_10px_rgba(6,182,212,0.3)]">
+        🔊
+    </button>
+
+    <!-- ==================== SCREEN 1: GATEWAY (LOGIN) ==================== -->
+    <section id="screen-gateway" class="flex-1 flex flex-col justify-center items-center p-6 relative z-10 animate-[popIn_0.5s_ease-out]">
+        <div class="text-center mb-8">
+            <div class="inline-block p-4 rounded-full bg-cyan-900/30 border-2 border-cyan-500 mb-4 shadow-[0_0_20px_rgba(6,182,212,0.5)]">
+                <span class="text-5xl block">🤖</span>
+            </div>
+            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 tracking-tight">KEPO</h1>
+            <h2 class="text-xl text-cyan-200 mt-1 tech-font font-bold">Weird or Genius?</h2>
+        </div>
+
+        <div class="glass-panel p-6 w-full max-w-sm glow-border">
+            <h3 class="text-lg text-cyan-300 mb-4 font-bold border-b border-cyan-500/30 pb-2">AUTHENTICATION REQUIRED</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1 tech-font uppercase">Nama Operator</label>
+                    <input type="text" id="input-name" class="w-full p-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500" placeholder="Masukkan nama...">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1 tech-font uppercase">N I K</label>
+                    <input type="number" id="input-nik" class="w-full p-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500" placeholder="123456">
+                </div>
+                
+                <p id="error-login" class="text-red-400 text-sm hidden font-bold text-center bg-red-900/30 p-2 rounded">Akses Ditolak: Data tidak lengkap!</p>
+
+                <button onclick="app.goToBriefing()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white tech-font font-bold text-lg py-3 rounded-lg mt-4 shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-colors">
+                    INITIALIZE LOGIN
+                </button>
+            </div>
+        </div>
+        
+        <p class="mt-auto text-xs text-slate-500 font-bold mt-10 tech-font tracking-widest">
+            EDUCATION & TRAINING DEPT. © 2026
+        </p>
+    </section>
+
+    <!-- ==================== SCREEN 2: MISSION BRIEFING ==================== -->
+    <section id="screen-briefing" class="flex-1 flex flex-col p-6 hidden relative z-10 overflow-y-auto">
+        <div class="flex items-center gap-3 mb-6 border-b border-cyan-500/30 pb-4">
+            <div class="w-2 h-8 bg-cyan-500 animate-pulse"></div>
+            <div>
+                <h1 class="text-2xl text-cyan-400 font-bold uppercase">Welcome, <span id="display-name" class="text-white"></span></h1>
+                <p class="text-xs text-slate-400 tech-font">Access Level: ANALYST</p>
+            </div>
+        </div>
+        
+        <!-- The Hook (WHY) -->
+        <div class="glass-panel p-5 mb-5 border-l-4 border-l-purple-500">
+            <h3 class="text-lg text-purple-400 mb-2 font-bold tech-font">&gt; THE CONTEXT [WHY]</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">
+                Di The Nexus, "Kepo" (Rasa ingin tahu) adalah pedang bermata dua. 
+                Satu sisi bisa memicu <span class="text-green-400 font-bold">Inovasi & Empati (Genius)</span>, tapi di sisi lain bisa menjadi <span class="text-red-400 font-bold">Pelanggaran Privasi & Gosip (Weird)</span>.
+                Batasannya sangat tipis, dan budaya kerja kita bergantung pada kemampuanmu menyaringnya.
+            </p>
+        </div>
+
+        <div class="glass-panel p-5 mb-8">
+            <h3 class="text-lg text-cyan-400 mb-3 font-bold tech-font">&gt; MISSION OBJECTIVE</h3>
+            <ul class="space-y-3 text-sm text-slate-300">
+                <li class="flex items-start gap-2">
+                    <span class="text-cyan-500">1.</span>
+                    <p><strong>Analisis Konteks:</strong> Baca siapa yang mengirim chat dan di mana obrolan terjadi.</p>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-cyan-500">2.</span>
+                    <p><strong>Evaluasi Pesan:</strong> Tentukan apakah pesan tersebut kepo yang <strong class="text-red-400">WEIRD</strong> (Aneh/Mengganggu) atau <strong class="text-green-400">GENIUS</strong> (Membangun/Solutif).</p>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-cyan-500">3.</span>
+                    <p><strong>Kumpulkan Data:</strong> Raih skor tertinggi untuk membuktikan insting komunikasimu!</p>
+                </li>
+            </ul>
+        </div>
+
+        <button onclick="app.startGame()" class="w-full bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold text-xl py-4 rounded-xl shadow-[0_0_20px_rgba(139,92,246,0.5)] mt-auto mb-4 tech-font hover:brightness-110 transition-all">
+            START MODERATION
+        </button>
+    </section>
+
+    <!-- ==================== SCREEN 3: GAMEPLAY (INTERVIEW/CHAT MODERATOR) ==================== -->
+    <section id="screen-game" class="flex-1 flex flex-col hidden relative z-10 h-full">
+        
+        <!-- Top HUD -->
+        <div class="bg-slate-900/95 p-4 border-b border-cyan-900 flex justify-between items-center shrink-0 shadow-lg">
+            <div class="w-1/2 pr-4">
+                <div class="flex justify-between text-xs tech-font mb-1">
+                    <span class="text-cyan-400">SYSTEM LOAD</span>
+                    <span class="text-slate-300"><span id="ui-q-num">1</span>/10</span>
+                </div>
+                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                    <div id="ui-progress" class="h-full bg-cyan-500 w-0 transition-all duration-300 shadow-[0_0_10px_#06b6d4]"></div>
+                </div>
+            </div>
+            <div class="text-right">
+                <p class="text-xs text-slate-400 tech-font">PERFORMANCE</p>
+                <p class="text-2xl font-black text-white" id="ui-score">0</p>
+            </div>
+        </div>
+
+        <!-- Badge Notification (Hidden by default) -->
+        <div id="ui-badge-notify" class="absolute top-20 left-1/2 transform -translate-x-1/2 bg-purple-900/90 border border-purple-400 text-purple-100 px-4 py-2 rounded-full text-sm font-bold shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50 flex items-center gap-2">
+            🏆 <span id="badge-text">Junior Moderator Unlocked!</span>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 overflow-y-auto p-4 flex flex-col justify-center">
+            
+            <!-- Context Box -->
+            <div class="glass-panel p-3 mb-6 border-l-4 border-l-cyan-500 animate-[popIn_0.3s_ease-out]">
+                <p class="text-[10px] text-cyan-400 tech-font tracking-widest mb-1">INTERCEPTED DATA</p>
+                <div class="flex gap-2 text-sm text-slate-300">
+                    <span class="font-bold text-white">Sender:</span> <span id="chat-sender">Rekan Satu Divisi</span>
+                </div>
+                <div class="flex gap-2 text-sm text-slate-300">
+                    <span class="font-bold text-white">Channel:</span> <span id="chat-context">Direct Message (DM)</span>
+                </div>
+            </div>
+
+            <!-- Chat Display -->
+            <div class="flex flex-col mb-8 min-h-[150px]">
+                <div class="text-xs text-slate-500 text-center mb-4 tech-font">--- Incoming Message ---</div>
+                
+                <div class="flex gap-3 items-end">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center border border-slate-600 shrink-0">
+                        👤
+                    </div>
+                    <div class="chat-bubble shadow-lg text-sm md:text-base" id="chat-message">
+                        <!-- Chat text goes here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instant Feedback Overlay (Hidden by default) -->
+            <div id="instant-feedback" class="hidden mb-6 p-4 rounded-xl border font-bold text-sm text-center animate-[popIn_0.2s_ease-out]">
+                <!-- Feedback text injected here -->
+            </div>
+        </div>
+
+        <!-- Decision Buttons -->
+        <div id="decision-area" class="p-4 bg-slate-900/80 border-t border-slate-800 shrink-0">
+            <p class="text-center text-xs text-slate-400 tech-font mb-3">AWAITING MODERATOR JUDGEMENT...</p>
+            <div class="flex gap-3">
+                <button onclick="app.makeJudgement('Weird')" class="flex-1 btn-weird text-white font-extrabold text-lg py-4 rounded-xl flex items-center justify-center gap-2">
+                    <span>👽</span> WEIRD
+                </button>
+                <button onclick="app.makeJudgement('Genius')" class="flex-1 btn-genius text-white font-extrabold text-lg py-4 rounded-xl flex items-center justify-center gap-2">
+                    <span>🧠</span> GENIUS
+                </button>
+            </div>
+        </div>
+        
+        <!-- Continue Button (Hidden during judgement) -->
+        <div id="continue-area" class="p-4 bg-slate-900/80 border-t border-slate-800 shrink-0 hidden">
+            <button onclick="app.nextQuestion()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg py-4 rounded-xl flex items-center justify-center gap-2 tech-font transition-colors">
+                PROCEED TO NEXT MESSAGE &gt;&gt;
+            </button>
+        </div>
+
+    </section>
+
+    <!-- ==================== SCREEN 4: POST-ACTION DEBRIEF ==================== -->
+    <section id="screen-result" class="flex-1 flex flex-col p-4 hidden relative z-10 overflow-y-auto pb-10">
+        
+        <div class="text-center mt-8 mb-6">
+            <div class="inline-block p-4 rounded-full bg-cyan-900/30 border-2 border-cyan-500 mb-2">
+                <span class="text-4xl block" id="res-icon">📊</span>
+            </div>
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">EVALUATION COMPLETE</h1>
+            <p class="text-cyan-400 tech-font text-sm mt-1">Operator: <span id="res-name" class="font-bold"></span></p>
+        </div>
+
+        <!-- Score Card -->
+        <div class="glass-panel p-6 text-center mb-8 relative border-t-4 border-t-cyan-500">
+            <p class="text-xs text-slate-400 tech-font uppercase tracking-widest">Final Performance Score</p>
+            <p id="res-score" class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 my-2">80</p>
+            
+            <div class="bg-black/40 p-3 rounded-lg mt-4 inline-block border border-slate-700">
+                <p id="res-status" class="text-lg font-bold text-green-400">Rank: SENIOR MODERATOR</p>
+                <p id="res-message" class="text-xs mt-1 text-slate-300">
+                    Insting komunikasimu tajam. Kamu tahu persis batas privasi dan inovasi.
+                </p>
+            </div>
+        </div>
+
+        <h3 class="text-sm tech-font text-cyan-400 mb-4 border-b border-slate-700 pb-2 flex items-center gap-2">
+            <span>📑</span> LOG REVIEW & DEBRIEF
+        </h3>
+        
+        <!-- Review List -->
+        <div id="review-list" class="space-y-4 mb-8">
+            <!-- Injected via JS -->
+        </div>
+
+        <button onclick="location.reload()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-lg py-4 rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.4)] mt-auto mb-4 tech-font transition-colors">
+            [ RESTART SIMULATION ]
+        </button>
+        <p class="text-center text-[10px] text-slate-500 tech-font mt-2 pb-4">EDUCATION & TRAINING DEPT. © 2026</p>
+
+    </section>
+
+</div>
+
+<script>
+/**
+ * Kepo: Weird or Genius? - Game Logic & Data
+ */
+
+const questionBank = [
+    {
+        id: 1,
+        sender: "Analis Data (Beda Divisi)",
+        context: "Group Chat Proyek X",
+        chat: "Aku perhatiin komplain user bulan ini banyak di fitur Y. Kalau kita gali datanya lebih dalam, mungkin ada bug tersembunyi. Boleh aku kepo log-nya?",
+        type: "Genius",
+        feedback: "Kepo yang didasari observasi untuk memecahkan masalah (Problem Solving) adalah Genius. Ini mendorong inovasi dan perbaikan tim."
+    },
+    {
+        id: 2,
+        sender: "Rekan Kerja Sebelah Meja",
+        context: "Direct Message (DM)",
+        chat: "Bro, tadi malem lu balik sama siapa? Terus kok update statusnya galau gitu jam 2 pagi? Putus ya sama pacar lu?",
+        type: "Weird",
+        feedback: "Mencampuri ranah pribadi yang tidak ada hubungannya dengan pekerjaan membuat lawan bicara merasa terganggu dan risih (Weird)."
+    },
+    {
+        id: 3,
+        sender: "Staf Operasional",
+        context: "Forum Diskusi Internal",
+        chat: "Eh, kalau kita ubah alur persetujuan dokumen ini pakai sistem digital yang baru, kira-kira bisa potong waktu 50% nggak ya? Ada yang tahu cara kerjanya?",
+        type: "Genius",
+        feedback: "Kepo terhadap efisiensi proses (Process Improvement). Menantang status quo untuk hasil yang lebih cepat adalah pemikiran Genius."
+    },
+    {
+        id: 4,
+        sender: "Karyawan Baru",
+        context: "Direct Message (DM)",
+        chat: "Mbak, gaji manajer kita itu beneran nyentuh angka puluhan juta ya? Kemarin aku lihat dia beli jam tangan branded lho.",
+        type: "Weird",
+        feedback: "Membicarakan privasi finansial atau bergosip tentang barang pribadi orang lain adalah perilaku tidak etis di tempat kerja (Weird)."
+    },
+    {
+        id: 5,
+        sender: "Product Developer",
+        context: "Group Chat Inovasi",
+        chat: "Kepo deh, gimana kalau bot layanan pelanggan kita dikasih kemampuan sentimen analisis? Bakal sedetail apa ya dia baca emosi klien kita pas lagi marah?",
+        type: "Genius",
+        feedback: "Eksplorasi ide gila yang relevan dengan pengembangan produk (Product Innovation). Rasa ingin tahu seperti ini melahirkan terobosan."
+    },
+    {
+        id: 6,
+        sender: "Rekan Beda Departemen",
+        context: "Pantry (Obrolan Langsung diringkas dalam Chat)",
+        chat: "Tumben kamu pakai baju agak longgar hari ini? Lagi isi (hamil) ya? Udah berapa bulan nih kok gak cerita-cerita?",
+        type: "Weird",
+        feedback: "Pertanyaan sangat personal menyangkut kondisi fisik/medis tanpa diminta adalah intrusi privasi tingkat tinggi. Jelas Weird!"
+    },
+    {
+        id: 7,
+        sender: "Marketing Strategist",
+        context: "Group Chat Strategi",
+        chat: "Kenapa kompetitor kita selalu rilis fitur baru tiap hari Selasa minggu kedua? Jangan-jangan ada data habit user yang mereka tahu tapi kita nggak? Mari kita investigasi.",
+        type: "Genius",
+        feedback: "Keingintahuan kompetitif (Competitive Curiosity). Mempertanyakan pola kompetitor adalah kunci untuk tidak tertinggal di pasar."
+    },
+    {
+        id: 8,
+        sender: "Staf Administrasi",
+        context: "Direct Message (DM)",
+        chat: "Kamu kalau habis meeting sama Pak Bos kok selalu senyum-senyum sendiri? Ada apa sih di antara kalian berdua? Anak emas ya?",
+        type: "Weird",
+        feedback: "Menggiring opini, memicu rumor, dan asumsi negatif merusak rasa aman (Psychological Safety) di tim. Murni Weird."
+    },
+    {
+        id: 9,
+        sender: "Tim R&D",
+        context: "Group Chat Riset",
+        chat: "Kepo banget, kalau material A digabung sama material B dengan suhu ekstrim, apakah daya tahannya bakal naik dua kali lipat? Ada yang pernah coba baca jurnalnya?",
+        type: "Genius",
+        feedback: "Rasa ingin tahu ilmiah (Scientific Curiosity) yang memicu kolaborasi tim lintas fungsi untuk mencoba hal baru."
+    },
+    {
+        id: 10,
+        sender: "Rekan Kerja",
+        context: "Direct Message (DM)",
+        chat: "Si Budi sakit apa sih kok sampai cuti seminggu? Penyakit menular ya? Di rumah sakit mana dia dirawat? Tolong kasih tahu dong.",
+        type: "Weird",
+        feedback: "Kondisi medis adalah privasi mutlak. Bertanya secara mendesak dan berasumsi buruk menunjukkan empati yang salah tempat (Weird)."
+    }
+];
+
+const app = {
+    userData: { name: "", nik: "" },
+    score: 0,
+    currentQIndex: 0,
+    questions: [],
+    userAnswers: [],
+    badgesUnlocked: { half: false, full: false },
+
+    init() {
+        audioEngine.init();
+    },
+
+    goToBriefing() {
+        const nameInput = document.getElementById('input-name').value.trim();
+        const nikInput = document.getElementById('input-nik').value.trim();
+        const err = document.getElementById('error-login');
+        
+        if(!nameInput || !nikInput) {
+            err.classList.remove('hidden');
+            return;
+        }
+        
+        err.classList.add('hidden');
+        this.userData.name = nameInput;
+        this.userData.nik = nikInput;
+        document.getElementById('display-name').innerText = nameInput.toUpperCase();
+        
+        audioEngine.playSFX('select');
+        
+        document.getElementById('screen-gateway').classList.add('hidden');
+        document.getElementById('screen-briefing').classList.remove('hidden');
+    },
+
+    startGame() {
+        audioEngine.playSFX('start');
+        audioEngine.startBGM();
+        document.getElementById('btn-mute').classList.remove('hidden');
+        
+        this.score = 0;
+        this.currentQIndex = 0;
+        this.userAnswers = [];
+        this.badgesUnlocked = { half: false, full: false };
+        
+        // Shuffle questions
+        this.questions = this.shuffleArray([...questionBank]).slice(0, 10);
+        
+        document.getElementById('screen-briefing').classList.add('hidden');
+        document.getElementById('screen-game').classList.remove('hidden');
+        
+        this.loadQuestion();
+    },
+
+    loadQuestion() {
+        const q = this.questions[this.currentQIndex];
+        
+        // Update HUD
+        document.getElementById('ui-q-num').innerText = this.currentQIndex + 1;
+        document.getElementById('ui-progress').style.width = `${((this.currentQIndex) / 10) * 100}%`;
+        document.getElementById('ui-score').innerText = this.score;
+
+        // Reset UI Elements
+        document.getElementById('decision-area').classList.remove('hidden');
+        document.getElementById('continue-area').classList.add('hidden');
+        const feedbackEl = document.getElementById('instant-feedback');
+        feedbackEl.classList.add('hidden');
+        
+        // Populate Chat
+        document.getElementById('chat-sender').innerText = q.sender;
+        document.getElementById('chat-context').innerText = q.context;
+        
+        const chatBubble = document.getElementById('chat-message');
+        chatBubble.innerText = q.chat;
+        
+        // Re-trigger animation
+        chatBubble.style.animation = 'none';
+        void chatBubble.offsetWidth; /* trigger reflow */
+        chatBubble.style.animation = 'popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+
+        // Check Milestone Badges
+        this.checkMilestone();
+    },
+
+    makeJudgement(userChoice) {
+        const q = this.questions[this.currentQIndex];
+        const isCorrect = userChoice === q.type;
+        
+        // Point System
+        if(isCorrect) {
+            this.score += 10;
+            audioEngine.playSFX('correct');
+        } else {
+            audioEngine.playSFX('wrong');
+        }
+        
+        document.getElementById('ui-score').innerText = this.score;
+
+        // Save Data
+        this.userAnswers.push({
+            q: q,
+            userChoice: userChoice,
+            isCorrect: isCorrect
+        });
+
+        // Show Instant Feedback
+        document.getElementById('decision-area').classList.add('hidden');
+        document.getElementById('continue-area').classList.remove('hidden');
+        
+        const feedbackEl = document.getElementById('instant-feedback');
+        feedbackEl.classList.remove('hidden');
+        
+        if (isCorrect) {
+            feedbackEl.className = "mb-6 p-4 rounded-xl border font-bold text-sm bg-green-900/40 border-green-500 text-green-100 animate-[popIn_0.2s_ease-out]";
+            feedbackEl.innerHTML = `<div class="flex items-center gap-2 mb-1 text-green-400"><span class="text-xl">✅</span> <span>ACCESS GRANTED: PREDIKSI TEPAT</span></div> <p class="font-normal mt-2">${q.feedback}</p>`;
+        } else {
+            feedbackEl.className = "mb-6 p-4 rounded-xl border font-bold text-sm bg-red-900/40 border-red-500 text-red-100 animate-[popIn_0.2s_ease-out]";
+            feedbackEl.innerHTML = `<div class="flex items-center gap-2 mb-1 text-red-400"><span class="text-xl">❌</span> <span>ERROR: SALAH ANALISIS</span></div> <p class="font-normal mt-2">Pesan ini sebenarnya adalah <strong>${q.type}</strong>. ${q.feedback}</p>`;
+        }
+    },
+
+    nextQuestion() {
+        this.currentQIndex++;
+        if (this.currentQIndex < this.questions.length) {
+            this.loadQuestion();
+        } else {
+            this.endGame();
+        }
+    },
+
+    checkMilestone() {
+        if (this.currentQIndex === 5 && !this.badgesUnlocked.half) {
+            this.showBadge("Badge: 50% Data Processed!");
+            this.badgesUnlocked.half = true;
+            audioEngine.playSFX('badge');
+        }
+    },
+
+    showBadge(text) {
+        const badge = document.getElementById('ui-badge-notify');
+        document.getElementById('badge-text').innerText = text;
+        badge.style.opacity = '1';
+        badge.style.transform = 'translate(-50%, 10px)';
+        
+        setTimeout(() => {
+            badge.style.opacity = '0';
+            badge.style.transform = 'translate(-50%, 0)';
+        }, 3000);
+    },
+
+    endGame() {
+        audioEngine.stopBGM();
+        document.getElementById('screen-game').classList.add('hidden');
+        document.getElementById('btn-mute').classList.add('hidden');
+        document.getElementById('screen-result').classList.remove('hidden');
+        
+        document.getElementById('res-name').innerText = `${this.userData.name} (${this.userData.nik})`;
+        document.getElementById('res-score').innerText = this.score;
+        
+        // Status & Positive Reinforcement
+        const statusEl = document.getElementById('res-status');
+        const msgEl = document.getElementById('res-message');
+        const iconEl = document.getElementById('res-icon');
+        
+        if (this.score >= 70) {
+            audioEngine.playSFX('win');
+            iconEl.innerText = '🧠';
+            statusEl.innerText = 'Kategori: GENIUS';
+            statusEl.className = 'text-lg font-bold text-green-400';
+            msgEl.innerText = "Luar biasa! Insting komunikasimu sangat tajam. Kamu memiliki rasa ingin tahu yang jenius, inovatif, dan penuh empati tanpa melanggar privasi rekan kerjamu.";
+        } else {
+            audioEngine.playSFX('lose');
+            iconEl.innerText = '👽';
+            statusEl.innerText = 'Kategori: WEIRD';
+            statusEl.className = 'text-lg font-bold text-red-400';
+            msgEl.innerText = "Waduh! Rasa kepo kamu cenderung mengganggu privasi dan memicu drama. Kamu masuk kategori Weird. Mari pelajari lagi debrief di bawah agar komunikasi kerjamu lebih baik!";
+        }
+        
+        this.renderDebrief();
+    },
+
+    renderDebrief() {
+        const list = document.getElementById('review-list');
+        list.innerHTML = '';
+        
+        this.userAnswers.forEach((ans, index) => {
+            const isCorrect = ans.isCorrect;
+            const bgClass = isCorrect ? 'bg-green-900/20 border-green-500/30' : 'bg-red-900/20 border-red-500/30';
+            const icon = isCorrect ? '✅' : '❌';
+            const choiceColor = ans.userChoice === 'Genius' ? 'text-green-400' : 'text-red-400';
+            const actualColor = ans.q.type === 'Genius' ? 'text-green-400' : 'text-red-400';
+
+            const item = document.createElement('div');
+            item.className = `p-4 rounded-xl border ${bgClass} glass-panel`;
+            item.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="text-xl mt-1">${icon}</div>
+                    <div class="flex-1">
+                        <p class="text-[10px] text-slate-400 tech-font mb-1">DATA LOG #${index+1} | ${ans.q.sender}</p>
+                        <p class="text-sm font-semibold text-white mb-3 italic">"${ans.q.chat}"</p>
+                        
+                        <div class="flex gap-4 text-xs mb-3 border-l-2 border-slate-600 pl-2">
+                            <div>
+                                <span class="text-slate-400 block">Your Call:</span>
+                                <span class="font-bold ${choiceColor}">${ans.userChoice}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 block">Actual:</span>
+                                <span class="font-bold ${actualColor}">${ans.q.type}</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/30 p-2 rounded text-xs text-slate-300 leading-relaxed border border-slate-800">
+                            <span class="text-cyan-400 font-bold block mb-1">System Feedback:</span>
+                            ${ans.q.feedback}
+                        </div>
+                    </div>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+    },
+
+    shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+};
+
+// --- WEB AUDIO API (Lo-Fi Cyberpunk Vibe) ---
+const audioEngine = {
+    ctx: null,
+    isMuted: false,
+    bgmInterval: null,
+    isPlayingBGM: false,
+    step: 0,
+
+    init() {
+        const btn = document.getElementById('btn-mute');
+        btn.addEventListener('click', () => {
+            if (this.ctx && this.ctx.state === 'suspended') {
+                this.ctx.resume();
+            }
+            this.isMuted = !this.isMuted;
+            btn.innerText = this.isMuted ? '🔇' : '🔊';
+            
+            if(this.isMuted) {
+                this.stopBGM();
+            } else if(!document.getElementById('screen-game').classList.contains('hidden')) {
+                this.startBGM();
+            }
+        });
+    },
+
+    getAudioContext() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        return this.ctx;
+    },
+
+    playTone(frequency, type, attack, decay, vol) {
+        if (this.isMuted) return;
+        const ctx = this.getAudioContext();
+        
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(frequency, ctx.currentTime);
+        
+        // Synth filter for cyberpunk feel
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1000, ctx.currentTime);
+        
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + attack);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + attack + decay);
+        
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start();
+        osc.stop(ctx.currentTime + attack + decay);
+    },
+
+    playSFX(type) {
+        if (this.isMuted) return;
+        
+        switch(type) {
+            case 'select':
+                this.playTone(800, 'square', 0.05, 0.1, 0.1);
+                break;
+            case 'start':
+                this.playTone(400, 'sawtooth', 0.1, 0.2, 0.1);
+                setTimeout(() => this.playTone(600, 'sawtooth', 0.1, 0.3, 0.1), 150);
+                break;
+            case 'correct':
+                // Digital chime
+                this.playTone(880, 'sine', 0.05, 0.2, 0.1); // A5
+                setTimeout(() => this.playTone(1318.51, 'sine', 0.05, 0.4, 0.1), 100); // E6
+                break;
+            case 'wrong':
+                // Error buzz
+                this.playTone(150, 'sawtooth', 0.05, 0.3, 0.15);
+                setTimeout(() => this.playTone(130, 'sawtooth', 0.05, 0.3, 0.15), 100);
+                break;
+            case 'badge':
+                this.playTone(523.25, 'square', 0.1, 0.2, 0.1);
+                setTimeout(() => this.playTone(659.25, 'square', 0.1, 0.2, 0.1), 150);
+                setTimeout(() => this.playTone(783.99, 'square', 0.1, 0.4, 0.1), 300);
+                break;
+            case 'win':
+                [440, 554.37, 659.25, 880].forEach((f, i) => {
+                    setTimeout(() => this.playTone(f, 'sine', 0.1, 0.4, 0.1), i * 150);
+                });
+                break;
+            case 'lose':
+                [349.23, 329.63, 293.66, 261.63].forEach((f, i) => {
+                    setTimeout(() => this.playTone(f, 'sawtooth', 0.2, 0.4, 0.1), i * 250);
+                });
+                break;
+        }
+    },
+
+    startBGM() {
+        if (this.isMuted || this.isPlayingBGM) return;
+        this.getAudioContext();
+        this.isPlayingBGM = true;
+        this.step = 0;
+        
+        const tempo = 110; 
+        const intervalMs = (60 / tempo) * 1000 / 2; // 8th notes
+        
+        // Cyber-lofi bassline & arp pattern
+        const arp = [220, 261.63, 329.63, 261.63]; 
+        
+        this.bgmInterval = setInterval(() => {
+            if(!this.isPlayingBGM || this.isMuted) return;
+            
+            // Kick drum simulation
+            if (this.step % 4 === 0) {
+                this.playTone(50, 'sine', 0.01, 0.3, 0.2); 
+            }
+            
+            // Arp pattern
+            if (this.step % 2 === 0) {
+                const note = arp[(this.step / 2) % arp.length];
+                this.playTone(note, 'triangle', 0.05, 0.1, 0.05);
+            }
+            
+            this.step++;
+        }, intervalMs);
+    },
+
+    stopBGM() {
+        this.isPlayingBGM = false;
+        clearInterval(this.bgmInterval);
+    }
+};
+
+window.onload = () => {
+    app.init();
+};
+</script>
+</body>
+</html>
